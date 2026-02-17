@@ -1,22 +1,18 @@
-from app.graph.node_wrapper import node_logger
-from app.schemas.research import ResearchOutput
-from app.services.llm.llm_factory import LLMFactory
+# app/graph/nodes/research_node.py
 
-llm = LLMFactory.get_llm(agent_type="research")
+from app.graph.node_wrapper import node_logger
+from app.agents.research_agent import ResearchAgent
 
 
 @node_logger("research")
 def research_node(state):
-    prompt = """
-    Conduct market research for:
-    Brand Context: {brand_context}
-    """.format(brand_context=state["brand_context"] or "").strip()
+    agent = ResearchAgent()
 
-    result = llm.generate(
-        system_prompt="You are a senior market research analyst.",
-        user_prompt=prompt,
-        response_schema=ResearchOutput,
+    research_output = agent.run(
+        brand_context=state.get("brand_context", "")
     )
-    # Store as dict so state stays JSON-friendly
-    state["research"] = result.model_dump()
+
+    # Node controls state mutation
+    state["research"] = research_output.model_dump()
+
     return state
