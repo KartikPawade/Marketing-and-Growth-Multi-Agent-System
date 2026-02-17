@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./app.db"
     redis_url: str = "redis://localhost:6379/0"
 
+    # MongoDB (brand data)
+    mongodb_uri: str = "mongodb://localhost:27017"
+    mongodb_db_name: str = "marketing_growth"
+
     class Config:
         env_file = ".env"
 

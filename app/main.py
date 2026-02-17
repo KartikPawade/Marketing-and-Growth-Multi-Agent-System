@@ -2,11 +2,13 @@
 from fastapi import FastAPI
 
 from app.core.logging import setup_logging
+from app.api.routes_brand import router as brand_router
 from app.api.routes_campaign import router as campaign_router
 
 setup_logging()
 
 app = FastAPI(title="Multi Agents Marketing and Growth System")
+app.include_router(brand_router)
 app.include_router(campaign_router)
 
 @app.get("/health")
