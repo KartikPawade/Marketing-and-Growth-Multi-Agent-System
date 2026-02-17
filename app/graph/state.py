@@ -2,14 +2,16 @@ from typing import TypedDict, Optional, List, Dict
 
 
 class CampaignState(TypedDict):
+    """State for the campaign graph."""
+
     campaign_id: str
     brand_context: Optional[str]
 
-    research: Optional[str]
-    strategy: Optional[str]
-    content: Optional[str]
-    qa_report: Optional[Dict]
-    analytics: Optional[Dict]
+    research: Optional[dict]  # ResearchOutput.model_dump()
+    strategy: Optional[dict]  # StrategyOutput.model_dump()
+    content: Optional[dict]   # ContentOutput.model_dump()
+    qa_report: Optional[dict]  # QAReport.model_dump()
+    analytics: Optional[dict]  # AnalyticsReport.model_dump()
 
     validation_errors: Optional[List[str]]
     status: Optional[str]
