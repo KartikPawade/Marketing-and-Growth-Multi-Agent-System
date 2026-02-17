@@ -19,6 +19,6 @@ class ResearchOutput(BaseModel):
     description="Detailed description of demographic and psychographic profile"
     )
     market_size: float = Field(..., ge=0, description="Market size in USD millions")
-    growth_rate: float = Field(..., ge=0, le=100, description="Annual growth rate percentage")
-    key_insights: list[str] = Field(..., description="Key insights identified during research")
-    competitors: list[Competitor] = Field(..., description="List of major competitors")
+    growth_rate: float = Field(..., ge=0, le=100, description="Annual growth rate percentage, should be float value only")
+    key_insights: list[str] = Field(..., description="Key insights identified during research, should be list of strings")
+    competitors: list[str] = Field(..., description=f"List of major competitors, should be list of strings")

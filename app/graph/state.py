@@ -5,7 +5,7 @@ class CampaignState(TypedDict):
     """State for the campaign graph."""
 
     campaign_id: str
-    brand_context: Optional[str]
+    brand_context: Optional[Dict]
 
     research: Optional[dict]  # ResearchOutput.model_dump()
     strategy: Optional[dict]  # StrategyOutput.model_dump()

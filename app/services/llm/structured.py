@@ -10,11 +10,24 @@ T = TypeVar("T", bound=BaseModel)
 
 
 def schema_instruction(schema: type[BaseModel]) -> str:
-    """Return system-prompt text asking the LLM to respond with JSON matching the schema."""
+    """Ask the LLM for a JSON data object with the required keys; do not send the schema (model may echo it)."""
+    js = schema.model_json_schema()
+    props = js.get("properties", {})
+    required = js.get("required", list(props.keys()))
+    key_types = []
+    for k in required:
+        p = props.get(k, {})
+        t = p.get("type") or (p.get("anyOf") or [{}])[0].get("type") if p.get("anyOf") else "any"
+        if not t:
+            t = "array" if p.get("items") else "object"
+        key_types.append(f'"{k}" ({t})')
+    keys_desc = ", ".join(key_types)
     return (
-        "\n\nRespond with a single JSON object only (no markdown, no code fence, no explanation). "
-        "The JSON must match this schema: "
-        + json.dumps(schema.model_json_schema())
+        "\n\nRespond with exactly one JSON object: real data (your analysis) with these keys only: "
+        + keys_desc
+        + ". Do NOT output the schema or a definition—only the filled-in object. "
+        "No markdown, no code fence, no extra text. "
+        "Numeric fields must be plain numbers only (no currency symbols, units, or prose; e.g. use 1400 for 1.4 billion, 25 for 25%). "
     )
 
 

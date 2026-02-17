@@ -39,6 +39,7 @@ class OllamaProvider(BaseLLM):
                 {"role": "user", "content": user_prompt},
             ],
             temperature=0.7,
+            max_tokens=7048,  # avoid truncation; full ResearchOutput JSON needs room
         )
         usage = response.usage
         logger.info(
