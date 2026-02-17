@@ -5,6 +5,7 @@ venv/
 env/
 .env.local
 .env.*.local
+.dockerignore
 
 # Python
 __pycache__/

@@ -4,8 +4,9 @@ import uuid
 from app.db.repositories.brand_repo import create as repo_create
 from app.db.repositories.brand_repo import delete as repo_delete
 from app.db.repositories.brand_repo import get_by_id as repo_get_by_id
+from app.db.repositories.brand_repo import list_all as repo_list_all
 from app.db.repositories.brand_repo import update as repo_update
-from app.schemas.brand import BrandCreate, BrandResponse, BrandUpdate
+from app.schemas.brand import BrandCreate, BrandResponse, BrandSummary, BrandUpdate
 
 
 def _create_to_repo_data(payload: BrandCreate, brand_id: str) -> dict:
@@ -50,6 +51,11 @@ class BrandService:
         data = _create_to_repo_data(payload, brand_id)
         doc = repo_create(data)
         return BrandResponse(**doc)
+
+    def list_all(self) -> list[BrandSummary]:
+        """Return all brands (id and name only)."""
+        docs = repo_list_all()
+        return [BrandSummary(**d) for d in docs]
 
     def get_by_id(self, brand_id: str) -> BrandResponse | None:
         """Return full brand object (context + memory + timestamps)."""

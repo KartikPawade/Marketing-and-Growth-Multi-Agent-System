@@ -64,6 +64,13 @@ def create(data: dict[str, Any]) -> dict[str, Any]:
     return _doc_to_response(doc)
 
 
+def list_all() -> list[dict[str, Any]]:
+    """List all brands; returns id and name only."""
+    coll = get_brands_collection()
+    cursor = coll.find({}, projection=["_id", "name"])
+    return [{"id": str(d["_id"]), "name": d.get("name", "")} for d in cursor]
+
+
 def get_by_id(brand_id: str) -> dict[str, Any] | None:
     """Load full brand document from MongoDB."""
     coll = get_brands_collection()

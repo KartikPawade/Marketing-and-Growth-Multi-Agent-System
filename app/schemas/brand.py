@@ -45,6 +45,14 @@ class BrandUpdate(BaseModel):
     latest_insights: list[str] | None = None
 
 
+# --- List item (id + name only) ---
+class BrandSummary(BaseModel):
+    """Id and name for GET all brands."""
+
+    id: str
+    name: str = ""
+
+
 # --- Full brand document (stored in DB, returned by GET) ---
 class BrandResponse(BaseModel):
     """Full brand object: GET /brands/{id} and stored in DB."""

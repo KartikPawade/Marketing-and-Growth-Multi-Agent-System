@@ -1,13 +1,20 @@
 # app/api/routes_brand.py
 from fastapi import APIRouter, Body, HTTPException
 
-from app.schemas.brand import BrandCreate, BrandResponse, BrandUpdate
+from app.schemas.brand import BrandCreate, BrandResponse, BrandSummary, BrandUpdate
 from app.services.brand_service import BrandService
 
 router = APIRouter(prefix="/brands", tags=["Brands"])
 
 
-@router.post("/", response_model=BrandResponse)
+@router.get("", response_model=list[BrandSummary])
+def list_brands():
+    """Get all brands: id and name only."""
+    service = BrandService()
+    return service.list_all()
+
+
+@router.post("", response_model=BrandResponse)
 def create_brand(payload: BrandCreate = Body(default=BrandCreate())):
     """Create & persist brand + memory. Body can be empty."""
     service = BrandService()
