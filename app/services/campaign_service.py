@@ -18,5 +18,5 @@ class CampaignService:
         return {
             "id": "cmp_123",
             "status": "completed",
-            "research": result["research"]
+            "research": result
         }
