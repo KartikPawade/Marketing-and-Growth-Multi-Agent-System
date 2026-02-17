@@ -1,9 +1,12 @@
 # app/graph/nodes/strategy_node.py
 from app.services.llm.llm_factory import LLMFactory
+from app.graph.node_wrapper import node_logger
+
 
 llm = LLMFactory.get_llm(agent_type="strategy")
 
 
+@node_logger("strategy")
 def strategy_node(state):
     prompt = f"""
     Based on research:

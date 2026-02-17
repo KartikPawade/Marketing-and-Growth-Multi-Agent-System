@@ -1,4 +1,6 @@
-# app/graph/nodes/analytics_node.py
+from app.graph.node_wrapper import node_logger
+
+@node_logger("analytics")
 def analytics_node(state):
     state["analytics"] = {
         "predicted_ctr": "4.5%",

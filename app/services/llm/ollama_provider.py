@@ -1,9 +1,10 @@
 from openai import OpenAI
-
+import logging
 from app.core.settings import settings
 
 from .base import BaseLLM
 
+logger = logging.getLogger("ollama_provider")
 
 class OllamaProvider(BaseLLM):
     """
@@ -27,5 +28,13 @@ class OllamaProvider(BaseLLM):
             ],
             temperature=0.7,
         )
+        usage = response.usage
+
+        logger.info(
+            f"LLM_CALL | tokens={usage.total_tokens} | "
+            f"prompt_tokens={usage.prompt_tokens} | "
+            f"completion_tokens={usage.completion_tokens}"
+        )
+
         return response.choices[0].message.content or ""
 

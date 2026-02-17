@@ -1,8 +1,9 @@
 from app.services.llm.llm_factory import LLMFactory
+from app.graph.node_wrapper import node_logger
 
 llm = LLMFactory.get_llm(agent_type="research")
 
-
+@node_logger("research")
 def research_node(state):
     prompt = f"""
     Conduct market research for:
