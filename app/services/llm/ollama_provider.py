@@ -1,0 +1,31 @@
+from openai import OpenAI
+
+from app.core.settings import settings
+
+from .base import BaseLLM
+
+
+class OllamaProvider(BaseLLM):
+    """
+    Uses Ollama via its OpenAI-compatible endpoint.
+    Default base URL: http://localhost:11434/v1
+    """
+
+    def __init__(self, model: str | None = None):
+        self.client = OpenAI(
+            base_url=settings.ollama_base_url,
+            api_key=settings.ollama_api_key,
+        )
+        self.model = model or settings.ollama_model_default
+
+    def generate(self, system_prompt: str, user_prompt: str) -> str:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0.7,
+        )
+        return response.choices[0].message.content or ""
+
