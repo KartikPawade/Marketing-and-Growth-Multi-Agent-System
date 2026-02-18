@@ -12,11 +12,6 @@ logger = logging.getLogger("ollama_provider")
 
 
 class OllamaProvider(BaseLLM):
-    """
-    Uses Ollama via its OpenAI-compatible endpoint.
-    Default base URL: http://localhost:11434/v1
-    """
-
     def __init__(self, model: str | None = None):
         self.client = OpenAI(
             base_url=settings.ollama_base_url,
@@ -31,15 +26,15 @@ class OllamaProvider(BaseLLM):
         *,
         response_schema: type[BaseModel],
     ) -> BaseModel:
-        system_prompt = system_prompt + schema_instruction(response_schema)
-        response = self.client.chat.completions.create(
+        response = self.client.beta.chat.completions.parse(
             model=self.model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
+            response_format=response_schema,  # pydantic model directly
             temperature=0.7,
-            max_tokens=7048,  # avoid truncation; full ResearchOutput JSON needs room
+            max_tokens=7048,
         )
         usage = response.usage
         logger.info(
@@ -47,6 +42,6 @@ class OllamaProvider(BaseLLM):
             f"prompt_tokens={usage.prompt_tokens} | "
             f"completion_tokens={usage.completion_tokens}"
         )
-        content = response.choices[0].message.content or ""
-        return parse_structured_response(content, response_schema)
+        
+        return response.choices[0].message.parsed
 

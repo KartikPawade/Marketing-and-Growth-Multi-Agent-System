@@ -1,5 +1,5 @@
 # app/schemas/research.py
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Competitor(BaseModel):
@@ -18,7 +18,9 @@ class ResearchOutput(BaseModel):
     max_length=500,
     description="Detailed description of demographic and psychographic profile"
     )
-    market_size: float = Field(..., ge=0, description="Market size in USD millions")
-    growth_rate: float = Field(..., ge=0, le=100, description="Annual growth rate percentage, should be float value only")
-    key_insights: list[str] = Field(..., description="Key insights identified during research, should be list of strings")
-    competitors: list[str] = Field(..., description=f"List of major competitors, should be list of strings")
+    market_size: str = Field(..., description="Market size in USD millions")
+    growth_rate: str = Field(..., description="Annual growth rate percentage")
+    key_insights: list[str] = Field(..., description="Key insights identified during research")
+    competitors: list[Competitor] = Field(..., description="List of major competitors")
+
+    

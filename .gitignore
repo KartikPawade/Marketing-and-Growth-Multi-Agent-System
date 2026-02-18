@@ -47,6 +47,11 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
+# Node / Frontend
+node_modules/
+.vite/
+Frontend/dist/
+
 # Project
 *.db
 *.sqlite3

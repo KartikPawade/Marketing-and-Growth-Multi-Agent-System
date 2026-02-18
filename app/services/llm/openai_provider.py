@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from app.core.settings import settings
 
 from .base import BaseLLM
-from .structured import parse_structured_response, schema_instruction
 
 logger = logging.getLogger("openai_provider")
 
@@ -23,14 +22,15 @@ class OpenAIProvider(BaseLLM):
         *,
         response_schema: type[BaseModel],
     ) -> BaseModel:
-        system_prompt = system_prompt + schema_instruction(response_schema)
-        response = self.client.chat.completions.create(
+        response = self.client.beta.chat.completions.parse(
             model=self.model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
             temperature=0.7,
+            max_tokens=7048,
+            response_format=response_schema,
         )
         usage = response.usage
         logger.info(
@@ -38,6 +38,5 @@ class OpenAIProvider(BaseLLM):
             f"prompt_tokens={usage.prompt_tokens} | "
             f"completion_tokens={usage.completion_tokens}"
         )
-        content = response.choices[0].message.content or ""
-        return parse_structured_response(content, response_schema)
+        return response.choices[0].message.parsed
 

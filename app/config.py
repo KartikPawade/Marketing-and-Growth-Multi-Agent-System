@@ -4,14 +4,14 @@
 AGENT_MODEL_MAP = {
     "research": {
         "provider": "ollama",
-        "model": "llama3",
+        "model": "llama3.1:8b-instruct-q8_0",
     },
     "strategy": {
         "provider": "ollama",
-        "model": "llama3",
+        "model": "llama3.1:8b-instruct-q8_0",
     },
     "content": {
         "provider": "ollama",
-        "model": "llama3",
+        "model": "llama3.1:8b-instruct-q8_0",
     },
 }

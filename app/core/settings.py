@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     # Default provider/model when agent not in AGENT_MODEL_MAP
     llm_provider: str = "ollama"  # "ollama" | "openai" | "anthropic"
-    ollama_model_default: str = "llama3"
+    ollama_model_default: str = "llama3.1"
 
     # Ollama (OpenAI-compatible endpoint)
     ollama_base_url: str = "http://localhost:11434/v1"

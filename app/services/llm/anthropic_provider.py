@@ -19,12 +19,20 @@ class AnthropicProvider(BaseLLM):
         *,
         response_schema: type[BaseModel],
     ) -> BaseModel:
-        system_prompt = system_prompt + schema_instruction(response_schema)
-        response = self._client.messages.create(
+        response = self._client.beta.chat.completions.parse(
             model=self.model,
-            max_tokens=1024,
-            system=system_prompt,
-            messages=[{"role": "user", "content": user_prompt}],
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0.7,
+            max_tokens=7048,
+            response_format=response_schema,
         )
-        content = response.content[0].text
-        return parse_structured_response(content, response_schema)
+        usage = response.usage
+        logger.info(
+            f"LLM_CALL | tokens={usage.total_tokens} | "
+            f"prompt_tokens={usage.prompt_tokens} | "
+            f"completion_tokens={usage.completion_tokens}"
+        )
+        return response.choices[0].message.parsed

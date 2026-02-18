@@ -15,14 +15,7 @@ def _strategy_text(strategy: dict | str | None) -> str:
 
 SYSTEM_PROMPT = """You are a performance marketing copywriter. Your task is to produce campaign content as valid JSON only—no markdown, no code fences, no commentary.
 
-Output rules:
-- assets: An array of objects. Each object has exactly four string keys:
-  - headline: Primary headline (string).
-  - body: Main body copy (string).
-  - call_to_action: Call-to-action statement (string).
-  - channel: Publishing channel name, e.g. "LinkedIn", "Email" (string).
-
-Return exactly one JSON object with one key "assets", whose value is an array of such objects. Each asset must be an object with headline, body, call_to_action, and channel—all strings. No extra keys."""
+Return exactly one JSON object."""
 
 
 class ContentAgent:
@@ -36,7 +29,7 @@ class ContentAgent:
 Strategy:
 {strategy_text}
 
-Produce your output as a single JSON object with one key "assets". The value of "assets" must be an array of objects. Each object must have exactly: headline (string), body (string), call_to_action (string), channel (string). Create at least one asset per recommended channel; each asset is one object with those four keys.""".strip()
+Produce your output as a single JSON object.""".strip()
 
         result: ContentOutput = self.llm.generate(
             system_prompt=SYSTEM_PROMPT,
