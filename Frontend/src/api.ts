@@ -23,7 +23,7 @@ export const api = {
 
   brands: {
     list: () => request<BrandSummary[]>('/brands'),
-    create: (body: Record<string, unknown>) =>
+    create: (body: BrandCreateBody) =>
       request<BrandResponse>('/brands', { method: 'POST', body: JSON.stringify(body) }),
     get: (id: string) => request<BrandResponse>(`/brands/${id}`),
     update: (id: string, body: Record<string, unknown>) =>
@@ -47,6 +47,23 @@ export const api = {
   },
 };
 
+export interface BrandGuidelines {
+  visual_style: string;
+  preferred_channels: string[];
+  content_restrictions: string[];
+}
+
+export interface BrandCreateBody {
+  name: string;
+  description: string;
+  industry: string;
+  tone: string;
+  usp: string;
+  target_audience: string;
+  brand_guidelines?: BrandGuidelines;
+  latest_insights?: string[];
+}
+
 export interface BrandSummary {
   id: string;
   name: string;
@@ -60,7 +77,11 @@ export interface BrandResponse {
   tone: string;
   usp: string;
   target_audience: string;
-  memory?: Record<string, unknown>;
+  memory?: {
+    brand_guidelines?: BrandGuidelines;
+    latest_insights?: string[];
+    past_campaigns?: string[];
+  };
   created_at: string;
   updated_at: string;
 }
