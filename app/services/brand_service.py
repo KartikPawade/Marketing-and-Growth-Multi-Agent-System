@@ -63,15 +63,10 @@ class BrandService:
         """Return full brand object (context + memory + timestamps)."""
         doc = repo_get_by_id(brand_id)
         if doc is None:
-            return None
+            raise HTTPException(status_code=400, detail="Brand not present")
         return BrandResponse(**doc)
 
-    def get_by_id(self, brand_id: str) -> BrandResponse:
-        """Return brand or raise 400 if not found."""
-        brand = self.get_by_id(brand_id)
-        if brand is None:
-            raise HTTPException(status_code=400, detail="Brand not present")
-        return brand
+    
 
     def update(self, brand_id: str, payload: BrandUpdate) -> BrandResponse | None:
         """Update brand (partial)."""

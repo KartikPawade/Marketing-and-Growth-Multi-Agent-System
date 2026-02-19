@@ -23,3 +23,8 @@ def get_database() -> Database:
 def get_brands_collection() -> Collection:
     """Collection for all brand-related data (name, context, memory)."""
     return get_database()["brands"]
+
+
+def get_campaigns_collection() -> Collection:
+    """Collection for campaign runs (by brand, full graph result + metadata)."""
+    return get_database()["campaigns"]
