@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from app.core.settings import settings
 
 from .base import BaseLLM
-from .structured import parse_structured_response, schema_instruction
+
 
 logger = logging.getLogger("ollama_provider")
 

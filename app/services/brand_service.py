@@ -1,6 +1,8 @@
 # app/services/brand_service.py
 import uuid
 
+from fastapi import HTTPException
+
 from app.db.repositories.brand_repo import create as repo_create
 from app.db.repositories.brand_repo import delete as repo_delete
 from app.db.repositories.brand_repo import get_by_id as repo_get_by_id
@@ -63,6 +65,13 @@ class BrandService:
         if doc is None:
             return None
         return BrandResponse(**doc)
+
+    def get_by_id(self, brand_id: str) -> BrandResponse:
+        """Return brand or raise 400 if not found."""
+        brand = self.get_by_id(brand_id)
+        if brand is None:
+            raise HTTPException(status_code=400, detail="Brand not present")
+        return brand
 
     def update(self, brand_id: str, payload: BrandUpdate) -> BrandResponse | None:
         """Update brand (partial)."""

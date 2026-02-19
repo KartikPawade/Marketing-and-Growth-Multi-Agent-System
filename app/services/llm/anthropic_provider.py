@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
 from app.core.settings import settings
-
+import logging
 from .base import BaseLLM
-from .structured import parse_structured_response, schema_instruction
 
+logger = logging.getLogger("anthropic_provider")
 
 class AnthropicProvider(BaseLLM):
     def __init__(self, model: str | None = None):
