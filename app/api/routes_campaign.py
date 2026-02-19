@@ -18,7 +18,7 @@ def get_all_campaigns(brand_id: str):
 def get_campaign_by_id(brand_id: str, campaign_id: str):
     """Get a single campaign by ID."""
     service = CampaignService()
-    campaign = service.get_campaign_by_id(campaign_id)
+    campaign = service.get_campaign_by_id(brand_id=brand_id, campaign_id=campaign_id)
     if campaign is None:
         raise HTTPException(status_code=404, detail="Campaign not found")
     if campaign.get("brand_id") != brand_id:

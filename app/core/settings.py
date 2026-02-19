@@ -28,6 +28,12 @@ class Settings(BaseSettings):
     mongodb_uri: str = "mongodb://localhost:27017"
     mongodb_db_name: str = "marketing_growth"
 
+    # Tavily (search for research tools)
+    tavily_api_key: str = ""
+
+    # Serper (Google Search API – https://serper.dev/api-keys)
+    serper_api_key: str = ""
+
     # LangSmith tracing (LangChain/LangGraph)
     langsmith_tracing: bool = False
     langsmith_endpoint: str = "https://api.smith.langchain.com"
