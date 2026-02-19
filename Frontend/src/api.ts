@@ -33,8 +33,17 @@ export const api = {
   },
 
   campaigns: {
-    create: (body: { brand_id: string; goal: string; target_audience: string; budget: number }) =>
-      request<CampaignResponse>('/campaigns', { method: 'POST', body: JSON.stringify(body) }),
+    list: (brandId: string) =>
+      request<Campaign[]>(`/brands/${brandId}/campaigns`),
+    get: (brandId: string, campaignId: string) =>
+      request<Campaign>(`/brands/${brandId}/campaigns/${campaignId}`),
+    create: (brandId: string, body: { goal: string; target_audience: string; budget: number }) =>
+      request<CampaignCreateResponse>(`/brands/${brandId}/campaigns/`, {
+        method: 'POST',
+        body: JSON.stringify({ brand_id: brandId, ...body }),
+      }),
+    delete: (brandId: string, campaignId: string) =>
+      request<void>(`/brands/${brandId}/campaigns/${campaignId}`, { method: 'DELETE' }),
   },
 };
 
@@ -56,7 +65,24 @@ export interface BrandResponse {
   updated_at: string;
 }
 
-export interface CampaignResponse {
+export interface Campaign {
+  id: string;
+  brand_id: string;
+  brand_name?: string;
+  status: string;
+  goal: string;
+  target_audience: string;
+  budget: number;
+  research?: unknown;
+  strategy?: unknown;
+  content?: unknown;
+  qa_report?: unknown;
+  analytics?: unknown;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CampaignCreateResponse {
   id: string;
   status: string;
   research?: unknown;
