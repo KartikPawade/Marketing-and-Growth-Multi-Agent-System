@@ -7,6 +7,11 @@ class CampaignState(TypedDict):
     campaign_id: str
     brand_context: Optional[Dict]
 
+    # Campaign intent — passed in at graph.invoke() time
+    goal: Optional[str]
+    target_audience: Optional[str]
+    budget: Optional[float]
+
     research: Optional[dict]  # ResearchOutput.model_dump()
     strategy: Optional[dict]  # StrategyOutput.model_dump()
     content: Optional[dict]   # ContentOutput.model_dump()

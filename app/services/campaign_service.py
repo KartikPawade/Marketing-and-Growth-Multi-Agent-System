@@ -17,9 +17,14 @@ class CampaignService:
         brand_context = brand_service.get_by_id(campaign_data.brand_id)
 
         campaign_id = str(uuid.uuid4())
+
+        # Pass full campaign intent into state — all agents can now access it
         result = graph.invoke({
             "campaign_id": campaign_id,
             "brand_context": brand_context.model_dump(),
+            "goal": campaign_data.goal,
+            "target_audience": campaign_data.target_audience,
+            "budget": campaign_data.budget,
             "research": None,
             "strategy": None,
             "content": None,
@@ -53,13 +58,10 @@ class CampaignService:
         }
 
     def get_all_campaigns(self, brand_id: str | None = None):
-        """Return all campaigns, optionally filtered by brand_id."""
         return campaign_repo_list_all(brand_id=brand_id)
 
-    def get_campaign_by_id(self,brand_id: str, campaign_id: str):
-        """Return one campaign by id, or None if not found."""
+    def get_campaign_by_id(self, brand_id: str, campaign_id: str):
         return campaign_repo_get_by_id(brand_id=brand_id, campaign_id=campaign_id)
 
     def delete_campaign_by_id(self, campaign_id: str) -> bool:
-        """Delete campaign by id. Returns True if deleted."""
         return campaign_repo_delete(campaign_id)
