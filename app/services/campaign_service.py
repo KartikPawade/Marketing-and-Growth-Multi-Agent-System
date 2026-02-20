@@ -1,3 +1,4 @@
+# app/services/campaign_service.py
 import uuid
 
 from app.db.repositories.campaign_repo import (
@@ -18,7 +19,6 @@ class CampaignService:
 
         campaign_id = str(uuid.uuid4())
 
-        # Pass full campaign intent into state — all agents can now access it
         result = graph.invoke({
             "campaign_id": campaign_id,
             "brand_context": brand_context.model_dump(),
@@ -32,8 +32,12 @@ class CampaignService:
             "analytics": None,
         })
 
-        qa_passed = (result.get("qa_report") or {}).get("passed", False)
-        status = "completed" if qa_passed else "failed"
+        qa_report = result.get("qa_report") or {}
+
+        # Status is driven by critical issues, not the binary passed flag.
+        # A campaign with only recommendations still completes successfully.
+        critical_issues = qa_report.get("critical_issues", [])
+        status = "failed" if critical_issues else "completed"
 
         payload = {
             "campaign_id": campaign_id,

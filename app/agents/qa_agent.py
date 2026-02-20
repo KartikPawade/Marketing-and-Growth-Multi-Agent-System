@@ -1,22 +1,47 @@
 # app/agents/qa_agent.py
 import json
+import logging
 from typing import Any, Dict
 
 from app.schemas.qa import QAReport
 from app.services.llm.llm_factory import LLMFactory
 
-SYSTEM_PROMPT = """You are a senior campaign QA reviewer ensuring marketing content meets quality, brand safety, and strategic alignment standards before it goes live.
+logger = logging.getLogger("agents.qa")
 
-Quality standards:
-- Brand identity must be clearly recognisable — a reader should know whose ad this is without seeing a logo
-- The brand's differentiator must come through in every asset — generic copy is a failure
-- Each asset must be appropriate for its channel — wrong format or tone for a channel is a quality issue
-- No content restriction violations, however minor
-- Every asset must have a clear next step for the audience — vague or missing CTAs fail
-- The content as a whole must plausibly achieve the stated campaign goal
+SYSTEM_PROMPT = """You are a senior campaign QA reviewer checking marketing content before it goes live.
 
-Set "passed" to true only if there are zero critical issues.
+Classify every finding into one of two buckets:
+
+CRITICAL — blocks publishing:
+- Content restriction violation
+- Asset has no CTA at all
+- Asset format completely wrong for the channel
+
+RECOMMENDATIONS — quality improvements, does not block publishing:
+- Generic copy, weak hook, buried USP
+- CTA exists but could be sharper
+- Tone or brand voice could be stronger
+
+Set "passed" to true if there are zero critical issues.
 Output valid JSON only — no markdown, no code fences, no commentary. Return exactly one JSON object."""
+
+def _extract_restrictions(brand_context: Dict[str, Any]) -> list:
+    """
+    Content restrictions live inside memory.brand_guidelines, not at the
+    top level of brand_context. This helper navigates the correct path.
+    """
+    memory = brand_context.get("memory") or {}
+    if isinstance(memory, dict):
+        guidelines = memory.get("brand_guidelines") or {}
+    else:
+        # BrandMemory pydantic object
+        guidelines = getattr(memory, "brand_guidelines", {}) or {}
+
+    if isinstance(guidelines, dict):
+        return guidelines.get("content_restrictions", [])
+
+    # BrandGuidelines pydantic object
+    return getattr(guidelines, "content_restrictions", [])
 
 
 def _build_user_prompt(
@@ -26,20 +51,12 @@ def _build_user_prompt(
     goal: str,
     target_audience: str,
 ) -> str:
-    brand_name = brand_context.get("name", "")
-    usp = brand_context.get("usp", "")
-    tone = brand_context.get("tone", "")
-    restrictions = []
-    guidelines = brand_context.get("brand_guidelines") or {}
-    if isinstance(guidelines, dict):
-        restrictions = guidelines.get("content_restrictions", [])
-
     return f"""Review the following campaign content before it goes live.
 
-BRAND NAME: {brand_name}
-BRAND USP: {usp}
-BRAND TONE: {tone}
-CONTENT RESTRICTIONS: {json.dumps(restrictions)}
+BRAND NAME: {brand_context.get("name", "")}
+BRAND USP: {brand_context.get("usp", "")}
+BRAND TONE: {brand_context.get("tone", "")}
+CONTENT RESTRICTIONS: {json.dumps(_extract_restrictions(brand_context))}
 
 CAMPAIGN GOAL: {goal}
 TARGET AUDIENCE: {target_audience}
@@ -49,10 +66,14 @@ PLANNED CHANNELS: {json.dumps(strategy.get("channels", []))}
 CONTENT ASSETS:
 {json.dumps(content.get("assets", []), indent=2)}
 
-Evaluate whether this content would actually achieve the campaign goal with this audience.
-For any issue found, be specific: which asset, what the problem is, and why it matters in practice.
-Recommendations should be concrete and actionable.
+For each asset evaluate:
+1. Does it clearly belong to this brand without the brand name visible?
+2. Does the USP come through naturally — not forced?
+3. Is the format and tone native to the channel?
+4. Does it violate any content restriction?
+5. Does the CTA drive a specific action toward the campaign goal?
 
+For any issue: name the channel, state the problem, explain why it matters.
 Produce your review as a single JSON object.""".strip()
 
 
@@ -68,23 +89,35 @@ class QAAgent:
         goal: str = "",
         target_audience: str = "",
     ) -> QAReport:
-        # Hard structural check first — no point calling LLM if content is empty
         if not content or not content.get("assets"):
             return QAReport(
                 passed=False,
-                issues=["No content assets were generated."],
+                critical_issues=["No content assets were generated."],
                 recommendations=["Re-run the content agent with a valid strategy."],
             )
+
+        logger.info(
+            "QAAgent.run | brand=%s | assets=%d",
+            (brand_context or {}).get("name", "?"),
+            len(content.get("assets", [])),
+        )
 
         result: QAReport = self.llm.generate(
             system_prompt=SYSTEM_PROMPT,
             user_prompt=_build_user_prompt(
-                content or {},
+                content,
                 brand_context or {},
                 strategy or {},
                 goal,
                 target_audience,
             ),
             response_schema=QAReport,
+        )
+
+        logger.info(
+            "QAAgent.run | passed=%s | critical_issues=%d | recommendations=%d",
+            result.passed,
+            len(result.critical_issues),
+            len(result.recommendations),
         )
         return result

@@ -19,7 +19,7 @@ from app.tools.content.get_brand_guidelines          import get_brand_guidelines
 from app.tools.content.get_brand_tone                import get_brand_tone
 
 RESEARCH_TOOLS = [web_search, serper_competitor_lookup]
-STRATEGY_TOOLS = [get_brand_memory, get_past_campaigns]
+STRATEGY_TOOLS = [get_brand_memory, get_past_campaigns, get_brand_guidelines]
 CONTENT_TOOLS  = [get_brand_guidelines, get_brand_tone]
 
 __all__ = [

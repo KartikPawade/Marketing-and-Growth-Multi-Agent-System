@@ -8,26 +8,31 @@ class QAReport(BaseModel):
     passed: bool = Field(
         ...,
         description=(
-            "True only if there are zero critical issues across all assets. "
-            "A single asset failing any quality dimension is sufficient to fail the entire report. "
-            "Do not pass a campaign that has generic copy, missing brand identity, or misaligned CTAs."
+            "True only if there are zero critical issues. "
+            "Copy quality issues (weak hooks, buried USP) do NOT set this to false — "
+            "only hard violations do: content restriction breaches, missing CTAs entirely, "
+            "assets on wrong channels. If there are only recommendations, set passed=True."
         ),
     )
-    issues: list[str] = Field(
+    critical_issues: list[str] = Field(
         default_factory=list,
         description=(
-            "Specific issues found during review. Each entry must identify: which asset (by channel), "
-            "what the problem is, and why it matters in practice. "
-            "Example: 'TikTok asset — brand name absent; a viewer would not know whose product this is.' "
-            "Vague entries like 'copy could be improved' are not acceptable."
+            "Hard-stop violations that must block publishing. Only include: "
+            "(1) content restriction violations — e.g. before/after imagery, unverified health claims; "
+            "(2) missing CTA entirely — asset has no next step at all; "
+            "(3) asset targeted at completely wrong channel — e.g. a 2000-word essay for TikTok. "
+            "Each entry must name the channel and describe the specific violation. "
+            "Do NOT include copy quality feedback here."
         ),
     )
     recommendations: list[str] = Field(
         default_factory=list,
         description=(
-            "Concrete, actionable fixes for each issue raised. Each recommendation should be specific "
-            "enough that a copywriter could act on it immediately without further clarification. "
-            "Example: 'Add brand name to TikTok headline and reference the 24-hour adaptive plan USP "
-            "in the first sentence of body copy.'"
+            "Copy quality improvements that should be addressed but do not block publishing. "
+            "Includes: weak hooks, generic copy, buried USP, vague CTAs that exist but could be sharper, "
+            "tone mismatches, missing brand differentiator in body copy. "
+            "Each entry must name the channel and give a specific, actionable fix a copywriter "
+            "could act on immediately. Example: 'TikTok — rewrite headline to lead with the "
+            "24-hour adaptive plan angle instead of the generic HRV question.'"
         ),
     )

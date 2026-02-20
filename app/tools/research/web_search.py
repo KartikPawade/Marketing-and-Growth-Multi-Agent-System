@@ -11,6 +11,22 @@ from app.core.settings import settings
 
 logger = logging.getLogger("tools.web_search")
 
+_MAX_CONTENT_CHARS = 300  # ~75 tokens per result — enough context, no bloat
+
+
+def _trim_results(results: list[dict]) -> list[dict]:
+    """Strip noise from raw Tavily results before feeding to LLM."""
+    trimmed = []
+    for r in results:
+        trimmed.append({
+            "title":           r.get("title", ""),
+            "url":             r.get("url", ""),
+            "relevance_score": r.get("score", r.get("relevance_score", 0)),
+            # Truncate content — LLM only needs a snippet, not the full scrape
+            "content": r.get("content", "")[:_MAX_CONTENT_CHARS].strip(),
+        })
+    return trimmed
+
 # Module-level client — instantiated once, reused across calls
 # Avoids re-authenticating on every tool invocation
 _client: Optional[TavilyClient] = None
@@ -47,9 +63,7 @@ def web_search(
     - Recent competitor or industry news (topic="news")
     - Financial market data (topic="finance")
 
-    Do NOT use for competitor-specific research — use
-    serper_competitor_lookup for that. Do NOT use for brand-specific
-    internal data — use get_brand_memory for that.
+    Do NOT use for competitor-specific research.
 
     Args:
         query: Specific search query. Be precise — include year,
@@ -81,15 +95,7 @@ def web_search(
         results = {
             "answer":  response.get("answer"),  # Tavily's synthesized answer
             "topic":   topic,                   # so LLM knows which index was used
-            "results": [
-                {
-                    "title":           r["title"],
-                    "url":             r["url"],
-                    "content":         r["content"],
-                    "relevance_score": round(r.get("score", 0), 3),
-                }
-                for r in response.get("results", [])
-            ],
+            "results": _trim_results(response.get("results", [])),
             "query": query,
         }
 
