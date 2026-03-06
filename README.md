@@ -1,6 +1,40 @@
-# 🚀 Multi-Agent Marketing & Growth System
+<div align="center">
 
-> **An autonomous AI pipeline that takes a brand and a campaign goal — and outputs a fully researched, strategized, written, QA'd, and analytics-forecasted marketing campaign. Zero human intervention required between steps.**
+<br/>
+
+<h1>
+  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=900&size=38&duration=3000&pause=1000&color=8B5CF6&center=true&vCenter=true&width=700&lines=Multi-Agent+Marketing+System" alt="Multi-Agent Marketing System" />
+</h1>
+
+<p>
+  <img src="https://img.shields.io/badge/-%F0%9F%A4%96%20Autonomous%20AI%20Marketing%20Pipeline-8b5cf6?style=for-the-badge&labelColor=0f0f0f&color=8b5cf6" />
+</p>
+
+<h3>
+  <p>An autonomous AI pipeline that takes a brand and a campaign goal — and outputs a fully researched, strategized, written, QA'd, and analytics-forecasted marketing campaign. Zero human intervention required between steps.</p>
+</h3>
+
+<br/>
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/🕸️ LangGraph-Orchestration-ef4444?style=flat-square" />
+  <img src="https://img.shields.io/badge/🦜 LangChain-Integrated-1c3f59?style=flat-square" />
+  <img src="https://img.shields.io/badge/🧠 Multi--Agent-Pipeline-8b5cf6?style=flat-square" />
+  <img src="https://img.shields.io/badge/✅ Pydantic_v2-Validated_I/O-22c55e?style=flat-square" />
+  <img src="https://img.shields.io/badge/🔀 LLM-Agnostic-f59e0b?style=flat-square" />
+  <img src="https://img.shields.io/badge/📊 LangSmith-Observable-0ea5e9?style=flat-square" />
+  <img src="https://img.shields.io/badge/🧠 Brand_Memory-Persistent-7c3aed?style=flat-square" />
+  <img src="https://img.shields.io/badge/🌐 Web_Search-Live_Intel-16a34a?style=flat-square" />
+  <img src="https://img.shields.io/badge/OpenAI-GPT--4o-412991?style=flat-square&logo=openai&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-Memory_Store-47A248?style=flat-square&logo=mongodb&logoColor=white" />
+</p>
+
+<br/>
+
+
+</div>
 
 ---
 
@@ -23,46 +57,37 @@ Each step is an **autonomous AI agent** — specialized, tool-equipped, and orch
 
 ---
 
-## 🏗️ System Workflow for Brand Campaign
+## 🏗️ System Workflow
 
 <img width="3000" height="1220" alt="agent_pipeline (2)" src="https://github.com/user-attachments/assets/10b13425-b188-42b9-905e-3edf89304fe4" />
 
 ---
 
-## 🤖 The Agent Pipeline
-
-| Agent | Tools(Optional Use) | LLM Calls | Output Schema(Pydantic Validated) |
-|---|---|---|---|
-| Research | `web_search`, `serper_competitor_lookup` | Multi-step (ReAct tool loop) | `ResearchOutput` |
-| Strategy | `get_brand_memory`, `get_past_campaigns`, `get_brand_guidelines` | Multi-step (ReAct tool loop) | `StrategyOutput` |
-| Content | `get_brand_guidelines`, `get_brand_tone` | Multi-step (ReAct tool loop) | `ContentOutput` |
-| QA | None (reasoning only) | Single | `QAReport` |
-| Analytics | None (reasoning only) | Single | `AnalyticsReport` |
-
----
-
 ## ✨ Key Features
 
-**⚛ ReAct Agent Flow** — Agents follow Reason → Act → Observe, invoking tools iteratively before producing output. No single-pass guessing — each agent works like a human expert would.
-
-**🛠 Isolated Tool Registries** — Each agent has a strictly scoped toolset. Cross-domain tool calls are impossible by design. Hallucinated tool names return structured errors the agent reasons around.
-
-**✅ Pydantic v2 Validated I/O** — Every agent input and output is a typed Pydantic model. LLMs return strict JSON; malformed responses surface as API errors, never propagate silently downstream.
-
-**🗂 Single Shared Graph State** — All 6 nodes share one `CampaignState` TypedDict. Data flows automatically — research into strategy, strategy into content — with conditional routing handled declaratively by LangGraph.
-
-**🧠 Context Management** — Each agent receives only the context slice relevant to its task. No agent sees the full accumulated history, keeping prompts focused and preventing token overflow. 
-- Tools like Web search results from Tavily are also trimmed at the source before being passed into the agent, cutting noise and preserving context budget.
-
-**🔀 LLM Agnostic** — `LLMFactory` resolves provider and model per agent from a single config map. Swap any agent from GPT-4o to Claude to local Ollama in one line. Full offline support included.
-
-**⚙️ Conditional Pipeline Routing** — The QA node uses LangGraph's conditional edges. If zero critical issues → continue to publish. Any critical issues → pipeline halts entirely. Recommendations are logged but never block publishing (they're advisory, not blocking).
+| Feature | Description |
+|---|---|
+| ⚛ **ReAct Agent Flow** | Agents follow Reason → Act → Observe, invoking tools iteratively — no single-pass guessing |
+| 🛠 **Isolated Tool Registries** | Each agent has a strictly scoped toolset — cross-domain tool calls are impossible by design |
+| ✅ **Pydantic v2 Validated I/O** | Every agent input/output is a typed model — malformed LLM responses surface as API errors, never propagate silently |
+| 🗂 **Single Shared Graph State** | All 6 nodes share one `CampaignState` TypedDict — data flows automatically through the pipeline |
+| 🧠 **Context Management** | Each agent receives only its relevant context slice — prevents token overflow and prompt dilution |
+| 🔀 **LLM Agnostic** | `LLMFactory` swaps any agent between GPT-4o, Claude, or local Ollama with one config change |
+| ⚙️ **Conditional QA Gating** | Zero critical issues → publish. Any critical issues → pipeline halts entirely |
+| 🧠 **Persistent Brand Memory** | Brand memory compounds across campaigns — strategy improves with every run |
 
 ---
 
-## 📊 LangSmith Trace
+## 🤖 The Agent Pipeline
 
-<img width="1543" height="901" alt="Langsmith trace v2" src="https://github.com/user-attachments/assets/45edff50-23e5-43ad-a113-876966a53a2b" />
+| Agent | Tools | LLM Calls | Output Schema |
+|---|---|---|---|
+| 🔍 Research | `web_search`, `serper_competitor_lookup` | Multi-step (ReAct) | `ResearchOutput` |
+| 📊 Strategy | `get_brand_memory`, `get_past_campaigns`, `get_brand_guidelines` | Multi-step (ReAct) | `StrategyOutput` |
+| ✍️ Content | `get_brand_guidelines`, `get_brand_tone` | Multi-step (ReAct) | `ContentOutput` |
+| 🔎 QA | None (reasoning only) | Single | `QAReport` |
+| 📈 Analytics | None (reasoning only) | Single | `AnalyticsReport` |
+| 📤 Publish | None | — | Persists to MongoDB |
 
 ---
 
@@ -76,22 +101,23 @@ Each step is an **autonomous AI agent** — specialized, tool-equipped, and orch
 ### 2. 📊 Strategy Agent
 - Consumes research output + brand memory (past campaigns, guidelines, insights)
 - Designs a data-driven campaign strategy: objectives, channels, tactics, timeframes
-- Uses `get_brand_memory` and `get_past_campaigns` tools to ensure brand continuity
+- Uses `get_brand_memory` and `get_past_campaigns` to ensure brand continuity
 - Explicitly constrained: no aspirational fluff — only measurable, budget-realistic objectives
 
 ### 3. ✍️ Content Agent
 - Writes channel-native assets (copy varies dramatically per channel — TikTok ≠ email ≠ ad)
-- Respects brand tone, USP, and content restrictions via `get_brand_guidelines` / `get_brand_tone` tools
+- Respects brand tone, USP, and content restrictions via `get_brand_guidelines` / `get_brand_tone`
 - Uses multi-step tool calling (up to 4 steps) before producing final JSON output
 
 ### 4. 🔎 QA Agent
-- Reviews every content asset against 5 quality dimensions:
-  - Brand identity without name-dropping
-  - USP clarity
-  - Channel-native format/tone
-  - Content restriction compliance
-  - CTA specificity and goal alignment
-- **Hard gate**: critical issues block publishing and halt the pipeline
+Reviews every content asset against 5 quality dimensions:
+- Brand identity without name-dropping
+- USP clarity
+- Channel-native format/tone
+- Content restriction compliance
+- CTA specificity and goal alignment
+
+**Hard gate**: critical issues block publishing and halt the pipeline entirely.
 
 ### 5. 📈 Analytics Agent
 - Forecasts impressions, clicks, CTR, conversion rate, and budget allocation per channel
@@ -106,68 +132,47 @@ Each step is an **autonomous AI agent** — specialized, tool-equipped, and orch
 
 ## 🛠 Tools Explained
 
-### Research Agent Tools
+### Research Agent
+- **`web_search`** — Tavily semantic search for live market trends, audience signals, and industry news. Results trimmed before injection to preserve context budget.
+- **`serper_competitor_lookup`** — Serper Google Search API for real-time competitor positioning and share of voice signals.
 
-- **`web_search`** — Calls Tavily's semantic search API for live market trends, audience signals, and industry news. Results are trimmed before injection to preserve context budget.
-- **`serper_competitor_lookup`** — Hits the Serper Google Search API to pull real-time competitor positioning, messaging, and share of voice signals.
+### Strategy Agent
+- **`get_brand_memory`** — Fetches brand's full memory from MongoDB: past campaign IDs, accumulated insights, and guidelines. Always called first.
+- **`get_past_campaigns`** — Retrieves historical campaign records. Lets the agent build on what worked and avoid repeating what didn't.
+- **`get_brand_guidelines`** — Loads preferred channels, visual style rules, and hard content restrictions.
 
-### Strategy Agent Tools
-
-- **`get_brand_memory`** — Fetches the brand's full memory from MongoDB: past campaign IDs, accumulated insights, and brand guidelines. Always called first — constrains every strategic decision.
-- **`get_past_campaigns`** — Retrieves historical campaign records for the brand. Lets the strategy agent build on what worked and avoid repeating what didn't.
-- **`get_brand_guidelines`** — Loads preferred channels, visual style rules, and hard content restrictions. Strategy never recommends a tactic that violates these.
-
-### Content Agent Tools
-
-- **`get_brand_guidelines`** — Pulls content restrictions and channel preferences before writing a single word. Non-negotiable constraints — violations are caught by QA regardless.
-- **`get_brand_tone`** — Retrieves the brand's tone of voice, USP, and target audience. Ensures every asset sounds like the brand, not a generic AI output.
+### Content Agent
+- **`get_brand_guidelines`** — Pulls content restrictions and channel preferences before writing a single word.
+- **`get_brand_tone`** — Retrieves the brand's tone of voice, USP, and target audience. Ensures every asset sounds like the brand, not generic AI output.
 
 ---
 
-## 📂 Project Structure
+## 📊 LangSmith Trace
 
-```
-├── app/
-│   ├── main.py                    # FastAPI app, middleware, router registration
-│   ├── config.py                  # Agent → provider/model mapping
-│   ├── core/
-│   │   ├── settings.py            # Pydantic settings (env-driven)
-│   │   └── logging.py             # Structured logging setup
-│   ├── api/
-│   │   ├── routes_brand.py        # CRUD: brands
-│   │   ├── routes_campaign.py     # CRUD: campaigns (nested under brands)
-│   │   └── routes_analytics.py    # Analytics endpoints
-│   ├── agents/
-│   │   ├── research_agent.py      # Market research + competitor intel
-│   │   ├── strategy_agent.py      # Campaign strategy generation
-│   │   ├── content_agent.py       # Multi-channel content writing
-│   │   ├── qa_agent.py            # Content quality & compliance review
-│   │   └── analytics_agent.py     # Performance forecasting
-│   ├── graph/
-│   │   ├── builder.py             # LangGraph pipeline definition + conditional routing
-│   │   ├── state.py               # CampaignState TypedDict
-│   │   └── nodes/                 # One node per agent (research, strategy, content, qa, publish, analytics)
-│   ├── tools/
-│   │   ├── research/              # web_search, serper_competitor_lookup
-│   │   ├── strategy/              # get_brand_memory, get_past_campaigns, get_brand_guidelines
-│   │   └── content/               # get_brand_guidelines, get_brand_tone
-│   ├── services/
-│   │   ├── brand_service.py       # Brand business logic
-│   │   ├── campaign_service.py    # Campaign orchestration (triggers graph)
-│   │   └── llm/
-│   │       └── llm_factory.py     # Provider-agnostic LLM factory
-│   ├── db/
-│   │   ├── mongodb.py             # MongoDB client singleton
-│   │   └── repositories/          # brand_repo, campaign_repo, analytics_repo
-│   ├── memory/
-│   │   └── brand_memory.py        # Brand memory read/write (persistent cross-campaign)
-│   └── schemas/                   # Pydantic models: brand, campaign, strategy, content, analytics, qa
-├── Frontend/
-├── docker/
-│   └── docker-compose.yml         # MongoDB + Redis services
-├── requirements.txt
-└── .env.example
-```
+<img width="1543" height="901" alt="Langsmith trace v2" src="https://github.com/user-attachments/assets/45edff50-23e5-43ad-a113-876966a53a2b" />
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+| Technology | Role |
+|---|---|
+| **LangGraph** | Stateful multi-agent orchestration with conditional routing |
+| **FastAPI** | REST API framework, auto-documented via OpenAPI |
+| **LangSmith** | Full pipeline tracing and observability |
+| **Pydantic v2** | Schema validation across all agent I/O and API requests |
+| **MongoDB (PyMongo)** | Brand profiles, campaign history, memory storage |
+
+### AI / LLM
+| Technology | Role |
+|---|---|
+| **OpenAI GPT-4o-mini** | Default agent model (all 5 agents configurable independently) |
+| **Anthropic Claude** | Alternate provider, agent-level configurable |
+| **Ollama** | Local LLM fallback (llama3.1:8b) — full offline capability |
+| **LLMFactory** | Provider-agnostic factory — swap LLMs per agent with one config change |
+| **Tavily** | Semantic web search for research agent |
+| **Serper** | Google Search API for competitor lookup |
 
 ---
 
@@ -197,26 +202,50 @@ Each step is an **autonomous AI agent** — specialized, tool-equipped, and orch
 
 ---
 
-## 🛠️ Tech Stack Deep Dive
+## 📂 Project Structure
 
-### Backend
-| Technology | Role |
-|---|---|
-| **LangGraph** | Stateful multi-agent orchestration with conditional routing |
-| **FastAPI** | REST API framework , auto-documented via OpenAPI |
-| **LangSmith** | Full pipeline tracing and observability |
-| **Pydantic v2** | Schema validation across all agent I/O, API requests/responses |
-| **MongoDB (PyMongo)** | Brand profiles, campaign history, memory storage |
-
-### AI / LLM
-| Technology | Role |
-|---|---|
-| **OpenAI GPT-4o-mini** | Default agent model (all 5 agents configurable independently) |
-| **Anthropic Claude** | Alternate provider, agent-level configurable |
-| **Ollama** | Local LLM fallback (llama3.1:8b) — full offline capability |
-| **LLMFactory** | Provider-agnostic factory pattern — swap LLMs per agent with one config change |
-| **Tavily** | Semantic web search for research agent |
-| **Serper** | Google Search API for competitor lookup |
+```
+├── app/
+│   ├── main.py                    # FastAPI app, middleware, router registration
+│   ├── config.py                  # Agent → provider/model mapping
+│   ├── core/
+│   │   ├── settings.py            # Pydantic settings (env-driven)
+│   │   └── logging.py             # Structured logging setup
+│   ├── api/
+│   │   ├── routes_brand.py        # CRUD: brands
+│   │   ├── routes_campaign.py     # CRUD: campaigns (nested under brands)
+│   │   └── routes_analytics.py    # Analytics endpoints
+│   ├── agents/
+│   │   ├── research_agent.py      # Market research + competitor intel
+│   │   ├── strategy_agent.py      # Campaign strategy generation
+│   │   ├── content_agent.py       # Multi-channel content writing
+│   │   ├── qa_agent.py            # Content quality & compliance review
+│   │   └── analytics_agent.py     # Performance forecasting
+│   ├── graph/
+│   │   ├── builder.py             # LangGraph pipeline definition + conditional routing
+│   │   ├── state.py               # CampaignState TypedDict
+│   │   └── nodes/                 # One node per agent
+│   ├── tools/
+│   │   ├── research/              # web_search, serper_competitor_lookup
+│   │   ├── strategy/              # get_brand_memory, get_past_campaigns, get_brand_guidelines
+│   │   └── content/               # get_brand_guidelines, get_brand_tone
+│   ├── services/
+│   │   ├── brand_service.py       # Brand business logic
+│   │   ├── campaign_service.py    # Campaign orchestration (triggers graph)
+│   │   └── llm/
+│   │       └── llm_factory.py     # Provider-agnostic LLM factory
+│   ├── db/
+│   │   ├── mongodb.py             # MongoDB client singleton
+│   │   └── repositories/          # brand_repo, campaign_repo, analytics_repo
+│   ├── memory/
+│   │   └── brand_memory.py        # Brand memory read/write (persistent cross-campaign)
+│   └── schemas/                   # Pydantic models: brand, campaign, strategy, content, analytics, qa
+├── Frontend/
+├── docker/
+│   └── docker-compose.yml         # MongoDB + Redis services
+├── requirements.txt
+└── .env.example
+```
 
 ---
 
@@ -242,7 +271,7 @@ uvicorn app.main:app --reload
 # Docs at http://localhost:8000/docs
 ```
 
-### 3. Frontend (WSL recommended on Windows)
+### 3. Frontend
 ```bash
 cd Frontend
 npm install
@@ -258,7 +287,7 @@ npm run dev
 # LLM Providers (configure at least one)
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
-OLLAMA_BASE_URL=http://localhost:11434/v1   # For local LLMs
+OLLAMA_BASE_URL=http://localhost:11434/v1
 
 # Search tools
 TAVILY_API_KEY=tvly-...
@@ -284,7 +313,6 @@ LANGSMITH_TRACING=true
 - **Memory that compounds** — brand memory persists and improves across campaigns, making it genuinely more useful over time.
 - **Observable by design** — LangSmith tracing gives full visibility into every LLM call, tool use, and routing decision across the pipeline.
 
----
 ---
 
 *Built with FastAPI · LangGraph · LangChain · React · MongoDB · Docker*
